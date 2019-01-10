@@ -18,8 +18,11 @@ router.delete('/api/v1/categories/:id', deleteCategories);
 // FUNCTIONS
 function getCategories(request,response,next) {
   // expects an array of object to be returned from the model
+  console.log('hi');
   categories.get()
     .then( data => {
+      console.log('hi2');
+      console.log({data});
       const output = {
         count: data.length,
         results: data,
