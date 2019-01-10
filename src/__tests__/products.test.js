@@ -46,25 +46,25 @@ supergoose.stopDB = () => {
   mongoServer.stop();
 };
 
-const Categories = require('../models/categories');
+const Products = require('../models/products.js');
 
-function fakeCategory(){
+function fakeProduct(){
   let result = {};
   result.name = faker.hacker.noun();
-  result.description = faker.hacker.phrase();
-  result.color = faker.commerce.color();
+  result.type = faker.commerce.color();
+  result.size = faker.hacker.noun();
   return result;
 }
 
 beforeAll(supergoose.startDB);
 afterAll(supergoose.stopDB);
 
-describe('categories', () => {
+describe('products', () => {
   describe('GET routes', () => {
     it('returns an empty array when the db is empty', () => {
-      let myCategories = new Categories();
+      let myProducts = new Products();
       const expected = [];
-      return myCategories.get()
+      return myProducts.get()
         .then( (result) => {
           // console.log({result});
           expect(result).toEqual(expected);
@@ -72,33 +72,33 @@ describe('categories', () => {
     });
   
     it('returns all records on GET without id', () => {
-      let myCategories = new Categories();
-      let fake1 = fakeCategory();
-      let fake2 = fakeCategory();
-      let fake3 = fakeCategory();
+      let myProducts = new Products();
+      let fake1 = fakeProduct();
+      let fake2 = fakeProduct();
+      let fake3 = fakeProduct();
       const expected = [{...fake1}, {...fake2}, {...fake3}];
       const postPromises = [
-        myCategories.post(fake1),
-        myCategories.post(fake2),
-        myCategories.post(fake3)
+        myProducts.post(fake1),
+        myProducts.post(fake2),
+        myProducts.post(fake3)
       ];
 
       return Promise.all(postPromises)
         .then(() => {
-          return myCategories.get()
+          return myProducts.get()
             .then( (result) => {
               // console.log({expected});
               expect(result[0].name).toEqual(expected[0].name);
-              expect(result[0].description).toEqual(expected[0].description);
-              expect(result[0].color).toEqual(expected[0].color);
+              expect(result[0].type).toEqual(expected[0].type);
+              expect(result[0].size).toEqual(expected[0].size);
 
               expect(result[1].name).toEqual(expected[1].name);
-              expect(result[1].description).toEqual(expected[1].description);
-              expect(result[1].color).toEqual(expected[1].color);
+              expect(result[1].type).toEqual(expected[1].type);
+              expect(result[1].size).toEqual(expected[1].size);
 
               expect(result[2].name).toEqual(expected[2].name);
-              expect(result[2].description).toEqual(expected[2].description);
-              expect(result[2].color).toEqual(expected[2].color);
+              expect(result[2].type).toEqual(expected[2].type);
+              expect(result[2].size).toEqual(expected[2].size);
             })
             .catch();
         })
@@ -106,13 +106,13 @@ describe('categories', () => {
     });
 
     it('returns a single record on GET with an id', () => {
-      let myCategories = new Categories();
-      let fake1 = fakeCategory();
+      let myProducts = new Products();
+      let fake1 = fakeProduct();
       let expectedId;
-      return myCategories.post(fake1)
+      return myProducts.post(fake1)
         .then((result) => {
           expectedId = result._id
-          return myCategories.get(expectedId)
+          return myProducts.get(expectedId)
             .then( (result) => {
               expect(result[0]._id.toString()).toEqual(expectedId);
             })
@@ -125,30 +125,20 @@ describe('categories', () => {
 
   describe('POST routes', () => {
     it('returns an empty array when the db is empty', () => {
-      let myCategories = new Categories();
-      let result = myCategories.get()
+      let myProducts = new Products();
+      let result = myProducts.get()
         .then((result) => {
           expect(result).toEqual([]);
         })
         .catch();
     });
   
-    it('returns all records on GET without id', () => {
-      let myCategories = new Categories();
-
-      let result = myCategories.get()
-        .then((result) => {
-          expect(result).toEqual([]);
-        })
-        .catch();
-    });
-
     it('returns a single record on GET with an id', () => {
-      let myCategories = new Categories();
+      let myProducts = new Products();
 
       let id = 1;
 
-      let result = myCategories.get()
+      let result = myProducts.get()
         .then((result) => {
           expect(result).toEqual([]);
         })
@@ -158,19 +148,19 @@ describe('categories', () => {
 
   describe('PUT routes', () => {
     it('changes a record correctly', () => {
-      let myCategories = new Categories();
-      let fake1 = fakeCategory();
-      let fake2 = fakeCategory();
+      let myProducts = new Products();
+      let fake1 = fakeProduct();
+      let fake2 = fakeProduct();
       let fake1Id;
 
-      return myCategories.post(fake1)
+      return myProducts.post(fake1)
         .then((result) => {
           fake1Id = result._id;
-          return myCategories.put(fake1Id, fake2)
+          return myProducts.put(fake1Id, fake2)
             .then( (result) => {
               expect(result.name).toEqual(fake2.name);
-              expect(result.description).toEqual(fake2.description);
-              expect(result.color).toEqual(fake2.color);
+              expect(result.type).toEqual(fake2.type);
+              expect(result.size).toEqual(fake2.size);
             })
             .catch();
         })
@@ -178,14 +168,14 @@ describe('categories', () => {
     });
   
     it('returns an empty record when id does not exist', () => {
-      let myCategories = new Categories();
-      let fake1 = fakeCategory();
-      let fake2 = fakeCategory();
+      let myProducts = new Products();
+      let fake1 = fakeProduct();
+      let fake2 = fakeProduct();
       let fake1Id = 35;
 
-      return myCategories.post(fake1)
+      return myProducts.post(fake1)
         .then((result) => {
-          return myCategories.put(fake1Id, fake2)
+          return myProducts.put(fake1Id, fake2)
             .then( (result) => {
               expect(result).toEqual({});
             })
@@ -197,19 +187,19 @@ describe('categories', () => {
 
   describe('DELETE routes', () => {
     it('deletes a record correctly', () => {
-      let myCategories = new Categories();
-      let fake1 = fakeCategory();
+      let myProducts = new Products();
+      let fake1 = fakeProduct();
       let fake1Id;
 
-      return myCategories.post(fake1)
+      return myProducts.post(fake1)
         .then((result) => {
           fake1Id = result._id;
-          return myCategories.delete(fake1Id)
+          return myProducts.delete(fake1Id)
             .then( (result) => {
               expect(result).toEqual({});
-              return myCategories.get()
+              return myProducts.get()
                 .then( (result) => {
-                  console.log({result});
+                  // console.log({result});
                   expect(result).toEqual([]);
                 })
             })
