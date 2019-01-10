@@ -43,7 +43,6 @@ function postProducts(request,response,next) {
     .catch( next );
 }
 
-
 function putProducts(request,response,next) {
   // expects the record that was just updated in the database
   products.put(request.params.id, request.body)
