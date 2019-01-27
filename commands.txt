@@ -1,0 +1,33 @@
+~~~~~~~~~~~~
+categories
+~~~~~~~~~~~~
+GET
+http :3000/api/v1/categories
+http :3000/api/v1/categories/91516613-02cc-44ed-8c36-f2c80ec695d8
+
+POST
+echo '{"name":"Fletcher", "description":"person", "color":"cool"}' | http post :3000/api/v1/categories
+
+PUT
+echo '{"name":"Fletcher LaRue", "description":"person", "color":"Super cool"}' | http put :3000/api/v1/categories/91516613-02cc-44ed-8c36-f2c80ec695d8 
+
+DELETE
+http delete :3000/api/v1/categories/91516613-02cc-44ed-8c36-f2c80ec695d8
+
+~~~~~~~~~~~~
+prpducts
+~~~~~~~~~~~~
+GET
+http :3000/api/v1/products
+http :3000/api/v1/products/5c4df868772640444289196e
+
+POST
+echo '{"name":"Window", "type":"Glass", "size":"regular"}' | http post :3000/api/v1/products
+echo '{"name":"Window", "type":"Glass", "size":"small"}' | http post :3000/api/v1/products
+
+PUT
+echo '{"name":"Door", "type":"Wood", "size":"regular"}' | http put :3000/api/v1/products/5c4cfe6cbc0e882cc7891a47
+echo '{"name":"Door", "type":"Granite", "size":"regular"}' | http put :3000/api/v1/products/5c4cfe6cbc0e882cc7891a47
+
+DELETE
+http delete :3000/api/v1/products/5c4df87f772640444289196f
