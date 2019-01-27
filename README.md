@@ -10,10 +10,10 @@
 
 * [repo](https://github.com/asdFletcher/13-rest-server)
 * [travis](https://www.travis-ci.com/asdFletcher/13-rest-server)
-* [back-end](http://xyz.com) (when applicable)
+* [back-end](https://fl-13-rest-server.herokuapp.com/) (when applicable)
 
 #### Documentation
-* [jsdoc](http://xyz.com) (All assignments)
+* [jsdoc](https://fl-13-rest-server.herokuapp.com/docs) (All assignments)
 
 ### APIs
 #### `categories.js`
