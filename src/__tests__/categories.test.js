@@ -66,7 +66,6 @@ describe('categories', () => {
       const expected = [];
       return myCategories.get()
         .then( (result) => {
-          // console.log({result});
           expect(result).toEqual(expected);
         });
     });
@@ -87,7 +86,6 @@ describe('categories', () => {
         .then(() => {
           return myCategories.get()
             .then( (result) => {
-              // console.log({expected});
               expect(result[0].name).toEqual(expected[0].name);
               expect(result[0].description).toEqual(expected[0].description);
               expect(result[0].color).toEqual(expected[0].color);
@@ -199,7 +197,6 @@ describe('categories', () => {
               expect(result).toEqual({});
               return myCategories.get()
                 .then( (result) => {
-                  // console.log({result});
                   expect(result).toEqual([]);
                 })
             })

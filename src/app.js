@@ -9,7 +9,7 @@ const morgan = require('morgan');
 const errorHandler = require( './middleware/error.js');
 const notFound = require( './middleware/404.js' );
 const categories = require( './api/categories.js' );
-// const products = require( './api/products.js' );
+const products = require( './api/products.js' );
 
 // Prepare the express app
 const app = express();
@@ -23,7 +23,7 @@ app.use(express.urlencoded({extended:true}));
 
 // Routes
 app.use(categories);
-// app.use(products);
+app.use(products);
 
 // Catchalls
 app.use(notFound);

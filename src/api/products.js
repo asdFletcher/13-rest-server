@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-
+const util = require('util');
 const Products = require('../models/products.js');
 const products = new Products();
 
@@ -37,10 +37,9 @@ function getProduct(request,response,next) {
 }
 
 function postProducts(request,response,next) {
-  // expects the record that was just added to the database
   products.post(request.body)
-    .then( result => response.status(200).json(result) )
-    .catch( next );
+  .then( result => response.status(200).json(result) )
+  .catch( next );
 }
 
 function putProducts(request,response,next) {
