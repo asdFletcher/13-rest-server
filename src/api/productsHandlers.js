@@ -1,5 +1,8 @@
 'use strict';
 
+const Products = require('../models/products.js');
+const products = new Products();
+
 /**
  * @module productsHandlers
  */

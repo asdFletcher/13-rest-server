@@ -1,9 +1,6 @@
 'use strict';
 
 const express = require('express');
-const util = require('util');
-const Products = require('../models/products.js');
-const products = new Products();
 
 const router = express.Router();
 
