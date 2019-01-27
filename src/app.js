@@ -1,5 +1,8 @@
 'use strict';
-
+/**
+ * API Server Module
+ * @module src/app
+ */
 // 3rd Party Resources
 const express = require('express');
 const cors = require('cors');
@@ -25,12 +28,18 @@ app.use(express.urlencoded({extended:true}));
 app.use(categories);
 app.use(products);
 
+app.use('/docs', express.static('docs'));
+
 // Catchalls
 app.use(notFound);
 app.use(errorHandler);
 
 let isRunning = false;
 
+/**
+ * Start Server on specified port
+ * @param port {integer}
+ */
 module.exports = {
   server: app,
   start: (port) => {

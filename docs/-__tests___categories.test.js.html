@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: __tests__/categories.test.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: __tests__/categories.test.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Combines SuperTest and Mongoose Memory Server
+ * to reduce (hopefully) the pain of
+ * testing a Mongoose API
+ */
+
+const mongoose = require('mongoose');
+const MongoMemoryServer = require('mongodb-memory-server').default;
+const supertest = require('supertest');
+const faker = require('faker');
+const util = require('util');
+
+let mongoServer;
+
+let supergoose = module.exports = {};
+/**
+ * @server
+ * @returns function that expects an express server
+ */
+supergoose.server = (server) => supertest(server);
+
+/**
+ * Typically used in Jest beforeAll hook
+ */
+supergoose.startDB = async () => {
+  
+  mongoServer = new MongoMemoryServer();
+  
+  const mongoUri = await mongoServer.getConnectionString();
+  
+  const mongooseOptions = {
+    useNewUrlParser:true,
+    useCreateIndex: true
+  };
+  
+  await mongoose.connect(mongoUri, mongooseOptions, (err) => {
+    if (err) console.error(err);
+  });
+};
+
+/**
+ * Typically used in Jest afterAll hook
+ */
+supergoose.stopDB = () => {
+  mongoose.disconnect();
+  mongoServer.stop();
+};
+
+const Categories = require('../models/categories');
+
+function fakeCategory(){
+  let result = {};
+  result.name = faker.hacker.noun();
+  result.description = faker.hacker.phrase();
+  result.color = faker.commerce.color();
+  return result;
+}
+
+beforeAll(supergoose.startDB);
+afterAll(supergoose.stopDB);
+
+describe('categories', () => {
+  describe('GET routes', () => {
+    it('returns an empty array when the db is empty', () => {
+      let myCategories = new Categories();
+      const expected = [];
+      return myCategories.get()
+        .then( (result) => {
+          expect(result).toEqual(expected);
+        });
+    });
+  
+    it('returns all records on GET without id', () => {
+      let myCategories = new Categories();
+      let fake1 = fakeCategory();
+      let fake2 = fakeCategory();
+      let fake3 = fakeCategory();
+      const expected = [{...fake1}, {...fake2}, {...fake3}];
+      const postPromises = [
+        myCategories.post(fake1),
+        myCategories.post(fake2),
+        myCategories.post(fake3)
+      ];
+
+      return Promise.all(postPromises)
+        .then(() => {
+          return myCategories.get()
+            .then( (result) => {
+              expect(result[0].name).toEqual(expected[0].name);
+              expect(result[0].description).toEqual(expected[0].description);
+              expect(result[0].color).toEqual(expected[0].color);
+
+              expect(result[1].name).toEqual(expected[1].name);
+              expect(result[1].description).toEqual(expected[1].description);
+              expect(result[1].color).toEqual(expected[1].color);
+
+              expect(result[2].name).toEqual(expected[2].name);
+              expect(result[2].description).toEqual(expected[2].description);
+              expect(result[2].color).toEqual(expected[2].color);
+            })
+            .catch();
+        })
+        .catch();
+    });
+
+    it('returns a single record on GET with an id', () => {
+      let myCategories = new Categories();
+      let fake1 = fakeCategory();
+      let expectedId;
+      return myCategories.post(fake1)
+        .then((result) => {
+          expectedId = result._id
+          return myCategories.get(expectedId)
+            .then( (result) => {
+              expect(result[0]._id.toString()).toEqual(expectedId);
+            })
+            .catch();
+        })
+        .catch();
+
+    });
+  });
+
+  describe('POST routes', () => {
+    it('returns an empty array when the db is empty', () => {
+      let myCategories = new Categories();
+      let result = myCategories.get()
+        .then((result) => {
+          expect(result).toEqual([]);
+        })
+        .catch();
+    });
+  
+    it('returns a single record on GET with an id', () => {
+      let myCategories = new Categories();
+
+      let id = 1;
+
+      let result = myCategories.get()
+        .then((result) => {
+          expect(result).toEqual([]);
+        })
+        .catch();
+    });
+  });
+
+  describe('PUT routes', () => {
+    it('changes a record correctly', () => {
+      let myCategories = new Categories();
+      let fake1 = fakeCategory();
+      let fake2 = fakeCategory();
+      let fake1Id;
+
+      return myCategories.post(fake1)
+        .then((result) => {
+          fake1Id = result._id;
+          return myCategories.put(fake1Id, fake2)
+            .then( (result) => {
+              expect(result.name).toEqual(fake2.name);
+              expect(result.description).toEqual(fake2.description);
+              expect(result.color).toEqual(fake2.color);
+            })
+            .catch();
+        })
+        .catch();
+    });
+  
+    it('returns an empty record when id does not exist', () => {
+      let myCategories = new Categories();
+      let fake1 = fakeCategory();
+      let fake2 = fakeCategory();
+      let fake1Id = 35;
+
+      return myCategories.post(fake1)
+        .then((result) => {
+          return myCategories.put(fake1Id, fake2)
+            .then( (result) => {
+              expect(result).toEqual({});
+            })
+            .catch();
+        })
+        .catch();
+    });
+  });
+
+  describe('DELETE routes', () => {
+    it('deletes a record correctly', () => {
+      let myCategories = new Categories();
+      let fake1 = fakeCategory();
+      let fake1Id;
+
+      return myCategories.post(fake1)
+        .then((result) => {
+          fake1Id = result._id;
+          return myCategories.delete(fake1Id)
+            .then( (result) => {
+              expect(result).toEqual({});
+              return myCategories.get()
+                .then( (result) => {
+                  expect(result).toEqual([]);
+                })
+            })
+            .catch();
+        })
+        .catch();
+    });
+  
+  });
+});
+
+// Just so that it can live in the tests folder
+describe('supergoose', () => {
+  it('is super', () => {
+    expect(true).toBeTruthy();
+  });
+});</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-categoriesHandlers.html">categoriesHandlers</a></li><li><a href="module-middleware_404.html">middleware/404</a></li><li><a href="module-middleware_500.html">middleware/500</a></li><li><a href="module-productsHandlers.html">productsHandlers</a></li><li><a href="module-src_app.html">src/app</a></li></ul><h3>Classes</h3><ul><li><a href="Categories.html">Categories</a></li><li><a href="Product.html">Product</a></li></ul><h3>Global</h3><ul><li><a href="global.html#mongoose">mongoose</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Jan 27 2019 12:18:03 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
