@@ -1,5 +1,8 @@
 'use strict';
 
+const Categories = require('../models/categories.js');
+const categories = new Categories();
+
 /**
  * @module categoriesHandlers
  */
