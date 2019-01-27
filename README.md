@@ -1,18 +1,18 @@
 ![CF](http://i.imgur.com/7v5ASc8.png) LAB
 =================================================
 
-## Project Name
+## Lab 13 Rest Server
 
-### Author: Student/Group Name
+### Author: Fletcher LaRue
 
 ### Links and Resources
-* [repo](http://xyz.com)
-* [travis](http://xyz.com)
+[![Build Status](https://www.travis-ci.com/asdFletcher/13-rest-server.svg?branch=master)](https://www.travis-ci.com/asdFletcher/13-rest-server)
+
+* [repo](https://github.com/asdFletcher/13-rest-server)
+* [travis](https://www.travis-ci.com/asdFletcher/13-rest-server)
 * [back-end](http://xyz.com) (when applicable)
-* [front-end](http://xyz.com) (when applicable)
 
 #### Documentation
-* [swagger](http://xyz.com) (API assignments only)
 * [jsdoc](http://xyz.com) (All assignments)
 
 ### Modules
@@ -42,5 +42,3 @@ Usage Notes or examples
 * What assertions were made?
 * What assertions need to be / should be made?
 
-#### UML
-Link to an image of the UML for your application and response to events
